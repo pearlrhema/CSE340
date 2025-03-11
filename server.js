@@ -25,6 +25,10 @@ app.set("layout", "./layouts/layout")
  *************************/
 app.use(static)
 
+// i want to set the public folder as static in order to view the checker image
+app.use(express.static('public'));
+
+
 // Index routes
 app.get("/", function (req, res) {
   res.render("index", {title: "Home"})
