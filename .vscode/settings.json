@@ -9,8 +9,8 @@
             "previewLimit": 50,
             "server": "localhost",
             "driver": "PostgreSQL",
-            "name": "cse340a",
-            "connectString": "postgresql://cse340a_wiq6_user:iPGXc4iiAPx8sLJEiQjANs23DjixWWMX@dpg-cvbijst6l47c73aeaa7g-a.oregon-postgres.render.com/cse340a_wiq6"
+            "name": "cse340db4",
+            "connectString": "postgresql://cse340db4_hgew_user:USfXWnQ7e5VIomWlGIK4YTE8eEH4ASKc@dpg-cvdgcql2ng1s73fcjqj0-a.oregon-postgres.render.com/cse340db4_hgew"
         }
     ]
 }
