@@ -66,10 +66,10 @@ Util.buildDetails = async function(vehicle){
 
   if(vehicle){
     grid = '<div id="inv-detail">'
-    // grid += '<h1>' + vehicle.inv_make + ' ' + vehicle.inv_model + '</h1>'
-    grid += '<img src="' + vehicle.inv_thumbnail 
+    grid += '<img src="' + vehicle.inv_image 
     +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
-    +' on CSE Motors">'
+      + ' on CSE Motors">'
+    grid += '<h1>' + vehicle.inv_make + ' ' + vehicle.inv_model + '</h1>'
     grid += '<div class="namePrice">'
     grid += '<hr />'
     grid += '<span>Price: $' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
