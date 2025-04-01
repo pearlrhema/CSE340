@@ -493,7 +493,87 @@ color: var(--secondary);
     padding: 0;
 }
 
+/* Vehicle Detail Page Styling */
+#inv-detail {
+    display: flex;
+    flex-wrap: wrap;
+    background: #fff;
+    border-radius: 10px;
+    padding: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
 
+#inv-detail p {
+    text-align: center;
+    justify-content: center;
+    justify-self: center;
+    padding: 0;
+}
+
+#inv-detail img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+.namePrice {
+    font-size: 1.2em;
+    color: #333;
+    margin-top: 10px;
+}
+
+/* Mileage Styling */
+.mileage {
+    font-size: 1em;
+    color: #555;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Inventory Classification Page Styling */
+#inv-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px 0;
+    list-style: none;
+}
+
+#inv-display li {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+}
+
+#inv-display li:hover {
+    transform: scale(1.05);
+}
+
+#inv-display img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+.namePrice {
+    font-size: 1.2em;
+    color: #333;
+    margin-top: 10px;
+}
+
+.vehicle-details p{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+/* LARGE VIEW */
 @media screen and (min-width: 700px) {
     body {
         display: flex;
@@ -534,5 +614,40 @@ color: var(--secondary);
         background: #fff;
         padding: 10px 20px;
         border-radius: 8px 8px 0 0;
+    }
+    #inv-detail {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    #inv-detail img {
+        grid-column: 1/2;
+        grid-row: 1/2;
+        width: 100%;
+        height: auto;
+    }
+
+    #inv-display {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .vehicle-details {
+        grid-column: 2/3;
+        grid-row: 1/2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    #inv-display {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
