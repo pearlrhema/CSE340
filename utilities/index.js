@@ -74,6 +74,7 @@ Util.buildDetails = async function(vehicle){
     grid += '<div class="namePrice">'
     grid += '<span>Price: $' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
     grid += '<div class="mileage">Mileage: ' + new Intl.NumberFormat('en-US').format(vehicle.inv_miles) + ' miles</div>'
+    grid += '</div>'
     grid += '<p><strong>Description:</strong> ' + vehicle.inv_description + '</p>'
     grid += '<p><strong>Year:</strong> ' + vehicle.inv_year + '</p>'
     grid += '<p><strong>Color:</strong> ' + vehicle.inv_color + '</p>'
