@@ -14,10 +14,34 @@ const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/index")
 
+const session = require("express-session")
+const pool = require('./database/')
+//bring the account route into scope
+const accountRoute = require("./routes/accountRoute")
+
 
 /* ***********************
  View Engine and Templates
  *************************/
+/* ***********************
+ * Middleware
+ * ************************/
+app.use(session({
+  store: new (require('connect-pg-simple')(session))({
+    createTableIfMissing: true,
+    pool,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  name: 'sessionId',
+}))
+// Express Messages Middleware
+app.use(require('connect-flash')())
+app.use(function(req, res, next){
+  res.locals.messages = require('express-messages')(req, res)
+  next()
+})
 app.set("view engine", "ejs")
 app.use(expressLayouts)
 app.set("layout", "./layouts/layout")
@@ -31,6 +55,11 @@ app.use("/inv", inventoryRoute)
 
 // i want to set the public folder as static in order to view the checker image
 app.use(express.static('public'));
+
+//account Route
+/* this will direct every request that starts with account to the account route   */
+app.use("/account", accountRoute)
+/*when that is done go over to the accountController.js */
 
 
 // Index routes

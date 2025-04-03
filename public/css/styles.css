@@ -646,6 +646,39 @@ color: var(--secondary);
     }
 }
 
+.notice {
+    color: #01b0d3;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+label, input, button {
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+
 @media (min-width: 1024px) {
     #inv-display {
         grid-template-columns: repeat(3, 1fr);
