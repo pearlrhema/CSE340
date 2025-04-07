@@ -72,6 +72,12 @@ app.use("/account", accountRoute)
 // })
 app.get("/", utilities.handleErrors(baseController.buildHome))
 
+// app.get("/godwin", function (req, res) {
+//   req.flash("notice", "This is a flash message from /godwin.");
+//   res.redirect("/");
+// }) //this code will redirect the user to the home page after the flash message is displayed but it will not be displayed on the home page.
+
+
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {
   next({status: 404, message: 'Sorry, we appear to have lost that page.'})
