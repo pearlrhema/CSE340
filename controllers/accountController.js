@@ -27,7 +27,8 @@ accountCon.buildRegister = async function buildRegister(req, res, next) {
     res.render("account/register", {
       title: "Register",
       nav,
-      errors: null
+      errors: null /*Add the following line to the data object being sent to the view within the res.render() function.
+      errors: null*/
     })
   }
 /* ****************************************

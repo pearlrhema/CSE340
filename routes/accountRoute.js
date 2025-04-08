@@ -4,6 +4,9 @@ const router = new express.Router()
 const accountController = require("../controllers/accountController")
 const utilities = require("../utilities/");
 
+// (validation continues) add a require statement to bring the account-validation page, from the utilities folder into the routes scope
+const regValidate = require("../utilities/account-validation")
+
 router.get("/login", utilities.handleErrors(accountController.buildLogin));
 
 // Error handling middleware
@@ -15,8 +18,11 @@ router.use((err, req, res, next) => {
 router.get("/register", utilities.handleErrors(accountController.buildRegister))
 
 //adding path for the user registeration
-router.post("/register", utilities.handleErrors(accountController.registerAccount))
+router.post("/register", regValidate.registrationRules(), regValidate.checkRegData, utilities.handleErrors(accountController.registerAccount))
 
 module.exports = router;
 
 //this is the first thing to be done after which we go the server.js to enable the route
+
+/*(validation) the registration view could be passed an array of errors (up to four total). Currently, the view is not equipped to display more than one. We need to alter to code so that all errors could be displayed.
+Find and open the registration view in the views > account folder.*/
