@@ -20,6 +20,14 @@ router.get("/register", utilities.handleErrors(accountController.buildRegister))
 //adding path for the user registeration
 router.post("/register", regValidate.registrationRules(), regValidate.checkRegData, utilities.handleErrors(accountController.registerAccount))
 
+// Process the login attempt
+router.post(
+    "/login",
+    (req, res) => {
+      res.status(200).send('login process')
+    }
+  )
+
 module.exports = router;
 
 //this is the first thing to be done after which we go the server.js to enable the route

@@ -12,4 +12,19 @@ async function registerAccount(account_firstname, account_lastname, account_emai
     }
 }
 
-module.exports = { registerAccount}
+//finish server-side validation starts here
+/* **********************
+ *   Check for existing email
+ * ********************* */
+async function checkExistingEmail(account_email){
+    try {
+      const sql = "SELECT * FROM account WHERE account_email = $1"
+      const email = await pool.query(sql, [account_email])
+      return email.rowCount
+    } catch (error) {
+      return error.message
+    }
+  } //next you go over to account-validation and apply the check function
+
+
+module.exports = { registerAccount, checkExistingEmail}

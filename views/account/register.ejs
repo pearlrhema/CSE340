@@ -3,23 +3,23 @@
     <!-- Add an EJS code block, below where messages are displayed, to display errors -->
     <% if (errors) { %>
       <ul class="notice">
-     <% errors.array().forEach(error => { %>
-       <li><%= error.msg %></li>
-    <%  }) %>
-     </ul>
+          <% errors.array().forEach(error => { %>
+          <li><%= error.msg %></li>
+          <%  }) %>
+      </ul>
     <% } %>
     <!-- (validation) Open the accountController file.
 Locate the buildRegister function. -->
 
-    <form action="/account/register" method="POST">
+    <form action="/account/register" method="POST" novalidate>
         <label for="account_firstname">First Name:</label>
-        <input type="text" name="account_firstname" id="account_firstname" required>
+        <input type="text" name="account_firstname" id="account_firstname" required value="<%= locals.account_firstname %>">
       
         <label for="account_lastname">Last Name:</label>
-        <input type="text" name="account_lastname" id="account_lastname" required>
+        <input type="text" name="account_lastname" id="account_lastname" required value="<%= locals.account_lastname %>">
       
         <label for="account_email">Email:</label>
-        <input type="email" name="account_email" id="account_email" required>
+        <input type="email" name="account_email" id="account_email" required value="<%= locals.account_email %>">
       
         <label for="account_password">Password:</label>
         <span class="form-note"> The password must be minimum 12 characters in length, contain at least 1 capital letter, 1 number, and at least 1 special character</span>
