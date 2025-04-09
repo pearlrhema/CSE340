@@ -75,6 +75,11 @@ async function getInventoryById(inv_id) {
   }
 }
 
+// query to insert a new classification into the database. (task two ends here)
+async function insertClassification(classification_name) {
+  const sql = `INSERT INTO public.classification (classification_name) VALUES ($1) RETURNING *`;
+  const data = await pool.query(sql, [classification_name])
+  return data.rowCount
+}
 
-
-module.exports = { getClassifications, getInventoryByClassificationId, getInventoryById };
+module.exports = { getClassifications, getInventoryByClassificationId, getInventoryById, insertClassification };

@@ -104,6 +104,53 @@ invCont.buildManagementView = async function (req, res) {
 }
 // NEXT WE Add a route like /inv/ in the inventory routes file that renders the view via controller
 
+// after building the add-classification view in the add-classificatio.ejs, we need it to be displayed by the controller so we build the management view logic here
+
+// Renders the empty form
+invCont.showAddClassificationForm = async (req, res) => {
+  let nav = await utilities.getNav()
+  res.render("inventory/add-classification", {
+    title: "Add Classification",
+    nav,
+    errors: null,
+    message: req.flash("message")
+  })
+}
+
+// Handles the form submission
+invCont.addClassification = async (req, res) => {
+  const { classification_name } = req.body
+  const errors = validationResult(req)
+  let nav = await utilities.getNav()
+
+  if (!errors.isEmpty()) {
+    return res.render("inventory/add-classification", {
+      title: "Add Classification",
+      nav,
+      errors: errors.array(),
+      message: null
+    })
+  }
+
+  try {
+    const result = await invModel.insertClassification(classification_name)
+    if (result) {
+      req.flash("message", "Classification successfully added.")
+      return res.redirect("/inv")
+    } else {
+      throw new Error("Insert failed.")
+    }
+  } catch (error) {
+    return res.render("inventory/add-classification", {
+      title: "Add Classification",
+      nav,
+      errors: [],
+      message: "Failed to add classification."
+    })
+  }
+}
+
+// NEXT WE Add a route like /add-classification in the inventory routes file that renders the view via controller
 
 /* ***************************
  * Handles footer error link
