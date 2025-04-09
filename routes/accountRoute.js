@@ -7,6 +7,8 @@ const utilities = require("../utilities/");
 // (validation continues) add a require statement to bring the account-validation page, from the utilities folder into the routes scope
 const regValidate = require("../utilities/account-validation")
 
+const loginValidate = require("../utilities/account-validation")
+
 router.get("/login", utilities.handleErrors(accountController.buildLogin));
 
 // Error handling middleware
@@ -20,13 +22,15 @@ router.get("/register", utilities.handleErrors(accountController.buildRegister))
 //adding path for the user registeration
 router.post("/register", regValidate.registrationRules(), regValidate.checkRegData, utilities.handleErrors(accountController.registerAccount))
 
+router.post("/login", loginValidate.loginRules(), loginValidate.checkLoginData, utilities.handleErrors(accountController.loginAccount))
+
 // Process the login attempt
-router.post(
-    "/login",
-    (req, res) => {
-      res.status(200).send('login process')
-    }
-  )
+// router.post(
+//     "/login",
+//     (req, res) => {
+//       res.status(200).send('login process')
+//     }
+//   )
 
 module.exports = router;
 

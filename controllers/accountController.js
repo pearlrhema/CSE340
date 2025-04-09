@@ -8,15 +8,13 @@ const accountCon = {}
 *  Deliver login view
 * *************************************** */
 accountCon.buildLogin = async function buildLogin(req, res, next) {
-    try {
-        let nav = await utilities.getNav();
-        res.render("account/login", {
-            title: "Login",
-            nav,
-        });
-    } catch (error) {
-        next(error);
-    }
+    let nav = await utilities.getNav();
+    res.render("account/login", {
+      title: "Login",
+      nav,
+      errors: null /*Add the following line to the data object being sent to the view within the res.render() function.
+      errors: null*/
+    });
 }
 
 /* ****************************************
@@ -61,7 +59,34 @@ accountCon.registerAccount = async function registerAccount(req, res) {
         nav,
       })
     }
-  }
+}
+  
+/* ****************************************
+*  Process Registration
+* *************************************** */
+accountCon.loginAccount = async function loginAccount(req, res) {
+    let nav = await utilities.getNav()
+    const { account_email, account_password } = req.body
+  
+    const loginResult = await accountModel.loginAccount(
+      account_email,
+      account_password
+    )
+  
+    if (loginResult) {
+      req.flash("notice", `Welcome back ${loginResult.account_firstname}`)
+      res.status(200).render("account/login", {
+        title: "Login",
+        nav,
+      })
+    } else {
+      req.flash("notice", "Sorry, the login failed.")
+      res.status(501).render("account/login", {
+        title: "Login",
+        nav,
+      })
+    }
+}
 
 module.exports = accountCon;
 
