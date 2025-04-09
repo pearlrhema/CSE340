@@ -90,7 +90,7 @@ accountCon.loginAccount = async function loginAccount(req, res) {
     )
   
     if (loginResult) {
-      req.flash("notice", `Welcome back ${loginResult.account_firstname}`)
+      req.flash("notice", `Welcome back ${account_email}`)
       res.status(200).render("account/login", {
         title: "Login",
         nav,
