@@ -92,6 +92,18 @@ invCont.buildByInvId = async function (req, res, next) {
   }
 };
 
+//(2) after building the management view in the management.ejs, we need it to be displayed by the controller so we build the management view logic here
+invCont.buildManagementView = async function (req, res) {
+  let nav = await utilities.getNav()
+  let messages = req.flash("notice")
+  res.render("inventory/management", {
+    title: "Inventory Management",
+    nav,
+    messages,
+  })
+}
+// NEXT WE Add a route like /inv/ in the inventory routes file that renders the view via controller
+
 
 /* ***************************
  * Handles footer error link

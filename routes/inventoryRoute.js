@@ -10,6 +10,9 @@ router.get("/detail/:invId", invController.buildByInvId);
 // Broken route
 router.get("/broken", utilities.handleErrors(invController.throwError));
 
+//route to build management view
+router.get("/", utilities.handleErrors(invController.buildManagementView));
+
 // Route to build inventory item details view
 // router.get("/detail/:invId", invController.buildByInvId, utilities.handleErrors(invController.buildDetail));
 // Vehicle Detail Route
