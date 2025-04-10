@@ -82,4 +82,32 @@ async function insertClassification(classification_name) {
   return data.rowCount
 }
 
-module.exports = { getClassifications, getInventoryByClassificationId, getInventoryById, insertClassification };
+async function addInventory(vehicle) {
+  const sql = `
+    INSERT INTO inventory (inv_make, inv_model, inv_year, inv_color, inv_mileage, inv_price, inv_description, inv_image_url)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING *;
+  `;
+  const values = [
+    vehicle.make,
+    vehicle.model,
+    vehicle.year,
+    vehicle.color,
+    vehicle.mileage,
+    vehicle.price,
+    vehicle.description,
+    vehicle.image_url,
+  ];
+
+  try {
+    const result = await pool.query(sql, values);
+    return result.rows[0]; // Return the first row of the result
+  } catch (error) {
+    console.error('Error inserting inventory:', error);
+    throw error; // Propagate the error
+  }
+}
+
+
+
+module.exports = { getClassifications, getInventoryByClassificationId, getInventoryById, insertClassification, addInventory };

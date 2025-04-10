@@ -80,29 +80,73 @@ accountCon.registerAccount = async function registerAccount(req, res) {
 /* ****************************************
 *  Process Registration
 * *************************************** */
+// accountCon.loginAccount = async function loginAccount(req, res) {
+//     let nav = await utilities.getNav()
+//     const { account_email, account_password } = req.body
+  
+//     const loginResult = await accountModel.loginAccount(
+//       account_email,
+//       account_password
+//     )
+  
+//     if (loginResult) {
+//       req.flash("notice", `Welcome back ${account_email}`)
+//       res.status(200).render("account/login", {
+//         title: "Login",
+//         nav,
+//       })
+//     } else {
+//       req.flash("notice", "Sorry, the login failed.")
+//       res.status(501).render("account/login", {
+//         title: "Login",
+//         nav,
+//       })
+//     }
+// }
 accountCon.loginAccount = async function loginAccount(req, res) {
-    let nav = await utilities.getNav()
-    const { account_email, account_password } = req.body
-  
-    const loginResult = await accountModel.loginAccount(
-      account_email,
-      account_password
-    )
-  
-    if (loginResult) {
-      req.flash("notice", `Welcome back ${account_email}`)
-      res.status(200).render("account/login", {
+  let nav = await utilities.getNav()
+  const { account_email, account_password } = req.body
+
+  try {
+    const accountData = await accountModel.loginAccount(account_email)
+
+    if (!accountData) {
+      req.flash("notice", "Email not found.")
+      return res.status(401).render("account/login", {
         title: "Login",
         nav,
-      })
-    } else {
-      req.flash("notice", "Sorry, the login failed.")
-      res.status(501).render("account/login", {
-        title: "Login",
-        nav,
+        errors: null,
+        account_email,
       })
     }
+
+    const match = await bcrypt.compare(account_password, accountData.account_password)
+
+    if (match) {
+      req.flash("notice", `Welcome back, ${accountData.account_firstname}`)
+      // You might also want to set session here later
+      return res.status(200).redirect("/") // or go to dashboard or home
+    } else {
+      req.flash("notice", "Incorrect password.")
+      return res.status(401).render("account/login", {
+        title: "Login",
+        nav,
+        errors: null,
+        account_email,
+      })
+    }
+  } catch (error) {
+    console.error("Login error:", error)
+    req.flash("notice", "An error occurred during login.")
+    res.status(500).render("account/login", {
+      title: "Login",
+      nav,
+      errors: null,
+      account_email,
+    })
+  }
 }
+
 
 module.exports = accountCon;
 

@@ -154,6 +154,63 @@ invCont.addClassification = async (req, res) => {
 
 // NEXT WE Add a route like /add-classification in the inventory routes file that renders the view via controller
 
+// Render the Add Inventory form
+invCont.buildAddInventory = async function (req, res) {
+  const nav = await utilities.getNav()
+  res.render("inventory/add-inventory", {
+    title: "Add New Inventory",
+    nav,
+    errors: null,
+  })
+}
+
+// Handle the form submission
+invCont.addInventory = async function (req, res) {
+  const nav = await utilities.getNav()
+  const {
+    make,
+    model,
+    year,
+    color,
+    mileage,
+    price,
+    description,
+    image_url,
+  } = req.body
+
+  try {
+    const result = await invModel.addInventory({
+      make,
+      model,
+      year,
+      color,
+      mileage,
+      price,
+      description,
+      image_url,
+    })
+
+    req.flash("notice", "Vehicle successfully added.")
+    res.redirect("/inventory") // or wherever your inventory list is
+  } catch (error) {
+    console.error("Add inventory error:", error)
+    res.render("inventory/add-inventory", {
+      title: "Add New Inventory",
+      nav,
+      errors: [{ msg: "Error adding vehicle. Try again." }],
+      make,
+      model,
+      year,
+      color,
+      mileage,
+      price,
+      description,
+      image_url,
+    })
+  }
+}
+
+
 /* ***************************
  * Handles footer error link
  * ************************** */

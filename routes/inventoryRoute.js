@@ -2,7 +2,9 @@
 const express = require("express")
 const router = new express.Router() 
 const invController = require("../controllers/invController")
-const utilities = require("../utilities/");
+const utilities = require("../utilities/")
+
+const { inventoryRules, checkInventoryData } = require("../utilities/inventory-validation")
 
 //we do the checking for the classification name here
 const { check } = require("express-validator")
@@ -27,6 +29,26 @@ router.post("/add-classification",
     ],
     utilities.handleErrors(invController.addClassification));
 // NEXT WE QUERY THE DB FOR THE CLASSIFICATION NAME AND POST IT TO THE DB THROUGH THE MODEL. go to invModel.js
+
+
+// Route to build add-vehicle view and post the new inventory item
+// Show the Add Inventory form
+router.get("/add-inventory", invController.buildAddInventory)
+
+// Handle the form submission
+router.post("/add-inventory", invController.addInventory)
+
+// Show the form
+router.get("/add-inventory", invController.buildAddInventory)
+
+// Handle form post with validation
+router.post(
+  "/add-inventory",
+  inventoryRules(),
+  checkInventoryData,
+  invController.addInventory
+)
+
 
 // Route to build inventory item details view
 // router.get("/detail/:invId", invController.buildByInvId, utilities.handleErrors(invController.buildDetail));
