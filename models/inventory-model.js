@@ -82,31 +82,71 @@ async function insertClassification(classification_name) {
   return data.rowCount
 }
 
-async function addInventory(vehicle) {
-  const sql = `
-    INSERT INTO inventory (inv_make, inv_model, inv_year, inv_color, inv_mileage, inv_price, inv_description, inv_image_url)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    RETURNING *;
-  `;
-  const values = [
-    vehicle.make,
-    vehicle.model,
-    vehicle.year,
-    vehicle.color,
-    vehicle.mileage,
-    vehicle.price,
-    vehicle.description,
-    vehicle.image_url,
-  ];
+// async function addInventory(vehicle) {
+//   const sql = `
+//     INSERT INTO inventory (inv_make, inv_model, inv_year, inv_color, inv_mileage, inv_price, inv_description, inv_image_url)
+//     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+//     RETURNING *;
+//   `;
+//   const values = [
+//     vehicle.make,
+//     vehicle.model,
+//     vehicle.year,
+//     vehicle.color,
+//     vehicle.mileage,
+//     vehicle.price,
+//     vehicle.description,
+//     vehicle.image_url,
+//   ];
 
+//   try {
+//     const result = await pool.query(sql, values);
+//     return result.rows[0]; // Return the first row of the result
+//   } catch (error) {
+//     console.error('Error inserting inventory:', error);
+//     throw error; // Propagate the error
+//   }
+// }
+
+// models/inventory-model.js
+async function addInventory (
+  inv_make,
+  inv_model,
+  inv_year,
+  inv_description,
+  inv_image,
+  inv_thumbnail,
+  inv_price,
+  inv_miles,
+  inv_color
+) {
   try {
-    const result = await pool.query(sql, values);
-    return result.rows[0]; // Return the first row of the result
+    const sql = `
+      INSERT INTO public.inventory (
+        inv_make, inv_model, inv_year, inv_description, 
+        inv_image, inv_thumbnail, inv_price, inv_miles, inv_color
+      )
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`;
+
+    const data = await pool.query(sql, [
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+    ]);
+
+    return data.rows[0];
   } catch (error) {
-    console.error('Error inserting inventory:', error);
-    throw error; // Propagate the error
+    console.error("addInventory error", error);
+    return null;
   }
-}
+};
+
 
 
 

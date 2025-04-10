@@ -1,30 +1,38 @@
-const { body, validationResult } = require("express-validator")
+// utilities/inventory-validation.js
+const { body, validationResult } = require("express-validator");
+const utilities = require(".");
+const invModel = require("../models/inventory-model");
 
-const inventoryRules = () => {
+const invRules = () => {
   return [
-    body("make").trim().isLength({ min: 1 }).withMessage("Make is required."),
-    body("model").trim().isLength({ min: 1 }).withMessage("Model is required."),
-    body("year").isInt({ min: 1886 }).withMessage("Valid year is required."),
-    body("color").trim().isLength({ min: 1 }).withMessage("Color is required."),
-    body("mileage").isInt({ min: 0 }).withMessage("Mileage must be a positive number."),
-    body("price").isFloat({ min: 0 }).withMessage("Price must be a positive number."),
-    body("description").trim().isLength({ min: 1 }).withMessage("Description is required."),
-    body("image_url").isURL().withMessage("Valid image URL is required."),
-  ]
-}
+    body("classification_id").isInt().withMessage("Please select a valid classification."),
+    body("inv_make").trim().notEmpty().withMessage("Make is required."),
+    body("inv_model").trim().notEmpty().withMessage("Model is required."),
+    body("inv_year").isInt({ min: 1886 }).withMessage("Enter a valid year."),
+    body("inv_description").trim().notEmpty().withMessage("Description is required."),
+    body("inv_image").trim().notEmpty().withMessage("Image path is required."),
+    body("inv_thumbnail").trim().notEmpty().withMessage("Thumbnail path is required."),
+    body("inv_price").isFloat({ min: 0 }).withMessage("Enter a valid price."),
+    body("inv_miles").isInt({ min: 0 }).withMessage("Miles must be a non-negative number."),
+    body("inv_color").trim().notEmpty().withMessage("Color is required."),
+  ];
+};
 
-const checkInventoryData = (req, res, next) => {
-  const errors = validationResult(req)
+const checkInvData = async (req, res, next) => {
+  const errors = validationResult(req);
+  const nav = await utilities.getNav();
+  const classificationSelect = await utilities.buildClassificationList(req.body.classification_id);
+
   if (!errors.isEmpty()) {
-    const nav = req.app.locals.nav || "" // fallback if nav isn't passed
-    return res.render("inventory/add-inventory", {
-      title: "Add New Inventory",
+    res.render("./inventory/add-inventory", {
+      title: "Add New Vehicle",
       nav,
+      classificationSelect,
       errors: errors.array(),
-      ...req.body, // make form sticky
-    })
+    });
+    return;
   }
-  next()
-}
+  next();
+};
 
-module.exports = { inventoryRules, checkInventoryData }
+module.exports = { invRules, checkInvData };

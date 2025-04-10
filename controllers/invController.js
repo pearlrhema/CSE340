@@ -155,60 +155,82 @@ invCont.addClassification = async (req, res) => {
 // NEXT WE Add a route like /add-classification in the inventory routes file that renders the view via controller
 
 // Render the Add Inventory form
-invCont.buildAddInventory = async function (req, res) {
-  const nav = await utilities.getNav()
-  res.render("inventory/add-inventory", {
-    title: "Add New Inventory",
+// controllers/invController.js
+invCont.buildAddInventory = async function (req, res, next) {
+    let nav = await utilities.getNav();
+    const classificationSelect = await utilities.buildClassificationList();
+
+    res.render("inventory/add-inventory", {
+    title: "Add New Vehicle",
     nav,
-    errors: null,
-  })
-}
+    classificationSelect,
+      errors: null,
+    message: req.flash("message")
+  });
+};
+
 
 // Handle the form submission
+// controllers/invController.js
 invCont.addInventory = async function (req, res) {
-  const nav = await utilities.getNav()
   const {
-    make,
-    model,
-    year,
-    color,
-    mileage,
-    price,
-    description,
-    image_url,
-  } = req.body
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+  } = req.body;
+
+  const errors = validationResult(req);
+  const nav = await utilities.getNav();
+  const classificationSelect = await utilities.buildClassificationList(classification_id);
+
+  // Handle validation errors before inserting
+  if (!errors.isEmpty()) {
+    return res.render("inventory/add-inventory", {
+      title: "Add New Vehicle",
+      nav,
+      classificationSelect,
+      errors: errors.array(),
+      message: null
+    });
+  }
 
   try {
-    const result = await invModel.addInventory({
-      make,
-      model,
-      year,
-      color,
-      mileage,
-      price,
-      description,
-      image_url,
-    })
+    const addResult = await invModel.addInventory(
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color
+    );
 
-    req.flash("notice", "Vehicle successfully added.")
-    res.redirect("/inventory") // or wherever your inventory list is
+    if (addResult) {
+      req.flash("notice", `Successfully added ${inv_make} ${inv_model} to inventory.`);
+      return res.redirect("/inv");
+    } else {
+      throw new Error("Vehicle insert failed.");
+    }
   } catch (error) {
-    console.error("Add inventory error:", error)
-    res.render("inventory/add-inventory", {
-      title: "Add New Inventory",
+    console.error("Error adding vehicle:", error);
+    return res.render("inv/add-inventory", {
+      title: "Add New Vehicle",
       nav,
-      errors: [{ msg: "Error adding vehicle. Try again." }],
-      make,
-      model,
-      year,
-      color,
-      mileage,
-      price,
-      description,
-      image_url,
-    })
+      classificationSelect,
+      errors: [{ msg: "Failed to add vehicle. Try again." }],
+    });
   }
-}
+};
+
+
 
 
 /* ***************************

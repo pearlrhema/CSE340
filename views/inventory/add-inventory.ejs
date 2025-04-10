@@ -1,37 +1,45 @@
-<h1>Add New Inventory</h1>
+<h1>Add New Vehicle</h1>
 
-<% if (errors && errors.length > 0) { %>
-  <ul class="errors">
-    <% errors.forEach(error => { %>
-      <li><%= error.msg %></li>
-    <% }) %>
-  </ul>
+<% if (errors) { %>
+  <div class="error">
+    <ul>
+      <% errors.forEach(error => { %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  </div>
 <% } %>
 
-<form action="/inventory/add" method="POST">
-  <label for="make">Make</label>
-  <input type="text" id="make" name="make" required>
+<form action="/inventory/add-inventory" method="post">
+  <label for="classificationList">Classification</label>
+  <%- classificationSelect %>
 
-  <label for="model">Model</label>
-  <input type="text" id="model" name="model" required>
+  <label for="inv_make">Make</label>
+  <input type="text" name="inv_make" id="inv_make" required>
 
-  <label for="year">Year</label>
-  <input type="number" id="year" name="year" required>
+  <label for="inv_model">Model</label>
+  <input type="text" name="inv_model" id="inv_model" required>
 
-  <label for="color">Color</label>
-  <input type="text" id="color" name="color" required>
+  <label for="inv_year">Year</label>
+  <input type="number" name="inv_year" id="inv_year" required>
 
-  <label for="mileage">Mileage</label>
-  <input type="number" id="mileage" name="mileage" required>
+  <label for="inv_description">Description</label>
+  <textarea name="inv_description" id="inv_description" required></textarea>
 
-  <label for="price">Price</label>
-  <input type="number" step="0.01" id="price" name="price" required>
+  <label for="inv_image">Image Path</label>
+  <input type="text" name="inv_image" id="inv_image" value="/images/vehicles/no-image.png" required>
 
-  <label for="description">Description</label>
-  <textarea id="description" name="description" required></textarea>
+  <label for="inv_thumbnail">Thumbnail Path</label>
+  <input type="text" name="inv_thumbnail" id="inv_thumbnail" value="/images/vehicles/no-image-tn.png" required>
 
-  <label for="image_url">Image URL</label>
-  <input type="url" id="image_url" name="image_url" required>
+  <label for="inv_price">Price</label>
+  <input type="number" step="0.01" name="inv_price" id="inv_price" required>
+
+  <label for="inv_miles">Miles</label>
+  <input type="number" name="inv_miles" id="inv_miles" required>
+
+  <label for="inv_color">Color</label>
+  <input type="text" name="inv_color" id="inv_color" required>
 
   <button type="submit">Add Vehicle</button>
 </form>

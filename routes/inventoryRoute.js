@@ -4,7 +4,7 @@ const router = new express.Router()
 const invController = require("../controllers/invController")
 const utilities = require("../utilities/")
 
-const { inventoryRules, checkInventoryData } = require("../utilities/inventory-validation")
+const { invRules, checkInvData } = require("../utilities/inventory-validation")
 
 //we do the checking for the classification name here
 const { check } = require("express-validator")
@@ -33,19 +33,21 @@ router.post("/add-classification",
 
 // Route to build add-vehicle view and post the new inventory item
 // Show the Add Inventory form
-router.get("/add-inventory", invController.buildAddInventory)
+// router.get("/add-inventory", invController.buildAddInventory)
+router.get("/add-inventory", utilities.handleErrors( invController.buildAddInventory));
+
 
 // Handle the form submission
-router.post("/add-inventory", invController.addInventory)
+// router.post("/add-inventory", invController.addInventory)
 
 // Show the form
-router.get("/add-inventory", invController.buildAddInventory)
+// router.get("/add-inventory", invController.buildAddInventory)
 
 // Handle form post with validation
 router.post(
   "/add-inventory",
-  inventoryRules(),
-  checkInventoryData,
+  invRules(),
+  checkInvData,
   invController.addInventory
 )
 
