@@ -14,6 +14,8 @@ const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/index")
 
+const cookieParser = require("cookie-parser")
+
 const session = require("express-session")
 const pool = require('./database/')
 //bring the account route into scope
@@ -49,6 +51,7 @@ app.set("layout", "./layouts/layout")
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(cookieParser()) // for parsing cookies
 
 
 /* ***********************

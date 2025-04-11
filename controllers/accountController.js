@@ -1,5 +1,7 @@
 const utilities = require("../utilities/")
 const accountModel = require("../models/account-model")
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 //the password validation starts here by adding bcryptjs to the dependencies ( pnpm add bcrytjs)
 const bcrypt = require("bcryptjs")
@@ -103,49 +105,108 @@ accountCon.registerAccount = async function registerAccount(req, res) {
 //       })
 //     }
 // }
-accountCon.loginAccount = async function loginAccount(req, res) {
+
+
+// accountCon.loginAccount = async function loginAccount(req, res) {
+//   let nav = await utilities.getNav()
+//   const { account_email, account_password } = req.body
+
+//   try {
+//     const accountData = await accountModel.loginAccount(account_email)
+
+//     if (!accountData) {
+//       req.flash("notice", "Email not found.")
+//       return res.status(401).render("account/login", {
+//         title: "Login",
+//         nav,
+//         errors: null,
+//         account_email,
+//       })
+//     }
+
+//     const match = await bcrypt.compare(account_password, accountData.account_password)
+
+//     if (match) {
+//       req.flash("notice", `Welcome back, ${accountData.account_firstname}`)
+//       // You might also want to set session here later
+//       return res.status(200).redirect("/") // or go to dashboard or home
+//     } else {
+//       req.flash("notice", "Incorrect password.")
+//       return res.status(401).render("account/login", {
+//         title: "Login",
+//         nav,
+//         errors: null,
+//         account_email,
+//       })
+//     }
+//   } catch (error) {
+//     console.error("Login error:", error)
+//     req.flash("notice", "An error occurred during login.")
+//     res.status(500).render("account/login", {
+//       title: "Login",
+//       nav,
+//       errors: null,
+//       account_email,
+//     })
+//   }
+// }
+
+/* ****************************************
+ *  Process login request
+ * ************************************ */
+accountCon.accountLogin = async function accountLogin(req, res) {
   let nav = await utilities.getNav()
   const { account_email, account_password } = req.body
-
-  try {
-    const accountData = await accountModel.loginAccount(account_email)
-
-    if (!accountData) {
-      req.flash("notice", "Email not found.")
-      return res.status(401).render("account/login", {
-        title: "Login",
-        nav,
-        errors: null,
-        account_email,
-      })
-    }
-
-    const match = await bcrypt.compare(account_password, accountData.account_password)
-
-    if (match) {
-      req.flash("notice", `Welcome back, ${accountData.account_firstname}`)
-      // You might also want to set session here later
-      return res.status(200).redirect("/") // or go to dashboard or home
-    } else {
-      req.flash("notice", "Incorrect password.")
-      return res.status(401).render("account/login", {
-        title: "Login",
-        nav,
-        errors: null,
-        account_email,
-      })
-    }
-  } catch (error) {
-    console.error("Login error:", error)
-    req.flash("notice", "An error occurred during login.")
-    res.status(500).render("account/login", {
+  const accountData = await accountModel.getAccountByEmail(account_email)
+  if (!accountData) {
+    req.flash("notice", "Please check your credentials and try again.")
+    res.status(400).render("account/login", {
       title: "Login",
       nav,
       errors: null,
       account_email,
     })
+    return
+  }
+  try {
+    if (await bcrypt.compare(account_password, accountData.account_password)) {
+      delete accountData.account_password
+      const accessToken = jwt.sign(accountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 * 1000 })
+      if(process.env.NODE_ENV === 'development') {
+        res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
+      } else {
+        res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 })
+      }
+      return res.redirect("/account/")//this is where the management view will be populated if the password match
+    }
+    else {
+      req.flash("message notice", "Please check your credentials and try again.")
+      res.status(400).render("account/login", {
+        title: "Login",
+        nav,
+        errors: null,
+        account_email, //if the passwords do not match the login page will be displayed again with the email already filled in
+      })
+    }
+  } catch (error) {
+    throw new Error('Access Forbidden')
   }
 }
+
+/* ****************************************
+*  Deliver account management view
+* *************************************** */
+accountCon.buildAccountManagement = async function (req, res, next) {
+  let nav = await utilities.getNav();
+  req.flash("notice", "You're logged in") // Optional: Set flash message here
+  res.render("account/management", {
+    title: "Account Management",
+    nav,
+    errors: null,
+    message: req.flash("notice"), // Shows flash message if present
+  });
+};
+
 
 
 module.exports = accountCon;
