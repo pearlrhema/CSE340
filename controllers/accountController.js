@@ -180,7 +180,7 @@ accountCon.accountLogin = async function accountLogin(req, res) {
       return res.redirect("/account/")//this is where the management view will be populated if the password match
     }
     else {
-      req.flash("message notice", "Please check your credentials and try again.")
+      req.flash("notice", "Please check your credentials and try again.")
       res.status(400).render("account/login", {
         title: "Login",
         nav,
