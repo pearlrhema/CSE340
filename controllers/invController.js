@@ -137,7 +137,7 @@ invCont.addClassification = async (req, res) => {
   try {
     const result = await invModel.insertClassification(classification_name)
     if (result) {
-      req.flash("message", "Classification successfully added.")
+      req.flash("notice", ` ${classification_name} class has been successfully added.`)
       return res.redirect("/inv")
     } else {
       throw new Error("Insert failed.")
