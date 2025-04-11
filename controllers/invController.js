@@ -174,6 +174,7 @@ invCont.buildAddInventory = async function (req, res, next) {
 // controllers/invController.js
 invCont.addInventory = async function (req, res) {
   const {
+    classification_id,
     inv_make,
     inv_model,
     inv_year,
@@ -187,7 +188,7 @@ invCont.addInventory = async function (req, res) {
 
   const errors = validationResult(req);
   const nav = await utilities.getNav();
-  const classificationSelect = await utilities.buildClassificationList(classification_id);
+  const classificationSelect = await utilities.buildClassificationList(req.body.classification_id);
 
   // Handle validation errors before inserting
   if (!errors.isEmpty()) {
@@ -202,6 +203,7 @@ invCont.addInventory = async function (req, res) {
 
   try {
     const addResult = await invModel.addInventory(
+      classification_id,
       inv_make,
       inv_model,
       inv_year,
@@ -221,12 +223,25 @@ invCont.addInventory = async function (req, res) {
     }
   } catch (error) {
     console.error("Error adding vehicle:", error);
-    return res.render("inv/add-inventory", {
+    return res.render("inventory/add-inventory", {
       title: "Add New Vehicle",
       nav,
       classificationSelect,
-      errors: [{ msg: "Failed to add vehicle. Try again." }],
+      errors: errors.array(),
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+      msg: "Failed to add vehicle. Try again." 
     });
+    
+    //   errors: [{ msg: "Failed to add vehicle. Try again." }],
+    // });
   }
 };
 

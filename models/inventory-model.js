@@ -8,6 +8,7 @@ async function getClassifications(){
   return await pool.query("SELECT * FROM public.classification ORDER BY classification_name")
 }
 
+
 /* ***************************
  *  Get all inventory items and classification_name by classification_id
  * ************************** */
@@ -109,7 +110,8 @@ async function insertClassification(classification_name) {
 // }
 
 // models/inventory-model.js
-async function addInventory (
+async function addInventory(
+  classification_id,
   inv_make,
   inv_model,
   inv_year,
@@ -122,23 +124,32 @@ async function addInventory (
 ) {
   try {
     const sql = `
-      INSERT INTO public.inventory (
-        inv_make, inv_model, inv_year, inv_description, 
-        inv_image, inv_thumbnail, inv_price, inv_miles, inv_color
-      )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`;
+  INSERT INTO public.inventory (
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color
+  ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`;
 
-    const data = await pool.query(sql, [
-      inv_make,
-      inv_model,
-      inv_year,
-      inv_description,
-      inv_image,
-      inv_thumbnail,
-      inv_price,
-      inv_miles,
-      inv_color,
-    ]);
+  const data = await pool.query(sql, [
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color
+  ]);
+    
 
     return data.rows[0];
   } catch (error) {
@@ -150,4 +161,4 @@ async function addInventory (
 
 
 
-module.exports = { getClassifications, getInventoryByClassificationId, getInventoryById, insertClassification, addInventory };
+module.exports = { getClassifications, getInventoryByClassificationId, getInventoryById, insertClassification, addInventory};
