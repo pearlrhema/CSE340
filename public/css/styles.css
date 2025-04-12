@@ -544,6 +544,56 @@ margin-top: 1em;
     flex-wrap: wrap;
     padding: 0;
   }
+
+  /* Modern table styling */
+#inventoryDisplay {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#inventoryDisplay thead {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+#inventoryDisplay th,
+#inventoryDisplay td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+#inventoryDisplay tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+#inventoryDisplay tbody tr:hover {
+  background-color: #eef5ff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#inventoryDisplay th {
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media screen and (max-width: 768px) {
+  #inventoryDisplay {
+    font-size: 0.9rem;
+  }
+
+  #inventoryDisplay th,
+  #inventoryDisplay td {
+    padding: 0.5rem;
+  }
+}
+
   
   @media screen and (min-width: 700px) {
     body {

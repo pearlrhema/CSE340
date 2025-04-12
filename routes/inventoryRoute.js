@@ -51,6 +51,10 @@ router.post(
   invController.addInventory
 )
 
+//this is the getinventory route for the selected classification in the inventory management view.
+//the getInventoryJson function is called in the inventory.js file to get the data from the database and return it as Json.
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON));
+//next we set the function for the getInventory route in the invController.js file to get the data from the database and return it as Json.
 
 // Route to build inventory item details view
 // router.get("/detail/:invId", invController.buildByInvId, utilities.handleErrors(invController.buildDetail));

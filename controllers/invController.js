@@ -97,10 +97,12 @@ invCont.buildByInvId = async function (req, res, next) {
 //(2) after building the management view in the management.ejs, we need it to be displayed by the controller so we build the management view logic here
 invCont.buildManagementView = async function (req, res) {
   let nav = await utilities.getNav()
+  const classificationSelect = await utilities.buildClassificationList()
   let messages = req.flash("notice")
   res.render("inventory/management", {
     title: "Inventory Management",
     nav,
+    classificationSelect,
     messages,
   })
 }
@@ -245,7 +247,18 @@ invCont.addInventory = async function (req, res) {
   }
 };
 
-
+/* ***************************
+ *  Return Inventory by Classification As JSON
+ * ************************** */
+invCont.getInventoryJSON = async (req, res, next) => {
+  const classification_id = parseInt(req.params.classification_id)
+  const invData = await invModel.getInventoryByClassificationId(classification_id)
+  if (invData[0].inv_id) {
+    return res.json(invData)
+  } else {
+    next(new Error("No data returned"))
+  }
+}
 
 
 /* ***************************
