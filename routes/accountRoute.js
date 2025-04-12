@@ -12,7 +12,7 @@ const loginValidate = require("../utilities/account-validation")
 router.get("/login", utilities.handleErrors(accountController.buildLogin));
 
 //This ensures that when users go to /account/, they’ll be directed to the new account management view.
-router.get("/", utilities.handleErrors(accountController.buildAccountManagement));
+router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement));
 
 
 // Error handling middleware

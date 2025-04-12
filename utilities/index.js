@@ -168,4 +168,17 @@ Util.checkJWTToken = (req, res, next) => {
   }
  }
 
+
+/* ****************************************
+ *  Check Login
+ * ************************************ */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next()
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")
+  }
+ }  //How is this different from the one in the account-validation.js file?
+
 module.exports = Util
