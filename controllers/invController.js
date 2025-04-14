@@ -292,7 +292,6 @@ invCont.buildEditInventory = async function (req, res, next) {
       title: "Edit " + itemName,
       nav,
       classificationSelect: classificationSelect,
-      errors: null,
       inv_id: itemData.inv_id,
       inv_make: itemData.inv_make,
       inv_model: itemData.inv_model,
@@ -303,7 +302,9 @@ invCont.buildEditInventory = async function (req, res, next) {
       inv_price: itemData.inv_price,
       inv_miles: itemData.inv_miles,
       inv_color: itemData.inv_color,
-      classification_id: itemData.classification_id
+      classification_id: itemData.classification_id,
+      errors: null,
+      message: req.flash("message")
     })
 }
 //when the values are brought in from the database to populate the form fields, as well as when we detect errors, we will use local params to do so. This is why each of the individual values are declared in this controller function as part of the render data object

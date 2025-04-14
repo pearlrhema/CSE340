@@ -1,14 +1,18 @@
 <h1>Edit Inventory</h1>
-
 <% if (errors) { %>
-  <div class="error">
-    <ul>
-      <% errors.forEach(error => { %>
-        <li><%= error.msg %></li>
-      <% }) %>
-    </ul>
-  </div>
+  <ul class="notice">
+      <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+      <%  }) %>
+  </ul>
 <% } %>
+
+<p>Select classification below to Display and Edit Vehicle</p>
+
+  <ul>
+    <li><a href="/inv/add-classification">Add New Classification</a></li>
+    <li><a href="/inv/add-inventory">Add New Vehicle</a></li>
+  </ul>
 
 <form action="/inv/edit-inventory" method="post">
 
