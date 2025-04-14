@@ -14,7 +14,7 @@
     <li><a href="/inv/add-inventory">Add New Vehicle</a></li>
   </ul>
 
-<form action="/inv/edit-inventory" method="post">
+<form id="updateForm" action="/inv/edit-inventory" method="post">
 
 
   <label for="classificationList">Classification</label>
@@ -49,6 +49,8 @@
 
   <input type="hidden" name="inv_id" <% if(locals.inv_id) { %> value="<%= locals.inv_id %>" <% } %>>
   
-  <button type="submit">Edit Vehicle</button>
+  <button type="submit" disabled>Edit Vehicle</button>
+
 </form>
  
+<script src="../../public/js/inv-update.js"></script>
