@@ -91,7 +91,7 @@ function buildInventoryList(data) {
 //THIS FUNCTION CONFIRMS THE DELETE ACTION
 function confirmDelete(id) {
   if (confirm('Are you sure you want to delete this vehicle?')) {
-    window.location.href = '/inv/delete/' + id;
+    window.location.href = '/inv/delete-inventory/' + id;
   }
 }
 

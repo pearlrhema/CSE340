@@ -4,7 +4,7 @@ const router = new express.Router()
 const invController = require("../controllers/invController")
 const utilities = require("../utilities/")
 
-const { invRules, checkInvData, checkUpdateData, updateRules } = require("../utilities/inventory-validation")
+const { invRules, checkInvData, checkUpdateData, updateRules, DeleteRules, checkDeleteData } = require("../utilities/inventory-validation")
 
 //we do the checking for the classification name here
 const { check } = require("express-validator")
@@ -46,7 +46,7 @@ router.get("/add-inventory", utilities.handleErrors( invController.buildAddInven
 // Handle form post with validation
 router.post(
   "/add-inventory",
-  updateRules(),
+  invRules(),
   checkInvData,
   invController.addInventory
 )
@@ -62,10 +62,18 @@ router.get("/edit-inventory/:inv_id", utilities.handleErrors(invController.build
 //route to post the updated inventory item
 router.post(
   "/edit-inventory",
-  invRules(),
+  updateRules(),
   checkUpdateData,
   utilities.handleErrors(invController.editInventory)
 );
+
+// route to delete inventory item
+router.get("/delete-inventory/:inv_id", utilities.handleErrors(invController.buildDeleteInventory));
+
+router.post("/delete-inventory",
+  DeleteRules(),
+  checkDeleteData,
+  utilities.handleErrors(invController.deleteInventory));
 
 // Route to build inventory item details view
 // router.get("/detail/:invId", invController.buildByInvId, utilities.handleErrors(invController.buildDetail));

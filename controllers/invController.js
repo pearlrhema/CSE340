@@ -389,7 +389,115 @@ invCont.editInventory = async function (req, res) {
   }
 };
 
+//* ***************************
+// *  Build Delete Inventory View
+// * ************************** */
+invCont.buildDeleteInventory = async function (req, res, next) {
+  const inv_id = parseInt(req.params.inv_id)
+  const classification_id = parseInt(req.params.classification_id)
+    let nav = await utilities.getNav()
+    const itemData = await invModel.getInventoryById(inv_id)
+    const classificationSelect = await utilities.buildClassificationList(itemData.classification_id)
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`
+    res.render("inventory/delete-inventory", {
+      title: "Delete " + itemName,
+      nav,
+      classificationSelect: classificationSelect,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_description: itemData.inv_description,
+      inv_image: itemData.inv_image,
+      inv_thumbnail: itemData.inv_thumbnail,
+      inv_price: itemData.inv_price,
+      inv_miles: itemData.inv_miles,
+      inv_color: itemData.inv_color,
+      classification_id: itemData.classification_id,
+      errors: null,
+      message: req.flash("message")
+    })
+}
 
+//* ***************************
+// *  Delete Inventory Item
+// * ************************** */
+invCont.deleteInventory = async function (req, res) {
+  const {
+    inv_id,
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+  } = req.body;
+
+  const errors = validationResult(req);
+  const nav = await utilities.getNav();
+  const classificationSelect = await utilities.buildClassificationList(classification_id);
+
+  // Validate form data first
+  if (!errors.isEmpty()) {
+    return res.render("inventory/edit-inventory", {
+      title: "Edit Vehicle",
+      nav,
+      classificationSelect,
+      errors: errors.array(),
+      message: null
+    });
+  }
+
+  try {
+    // Convert string values to integers where necessary.
+    const invIdNum = parseInt(inv_id); 
+    const classificationIdNum = parseInt(classification_id);
+
+    // Call editInventory with values in the correct order.
+    const deleteResult = await invModel.deleteInventory(
+      invIdNum,               // 1. Vehicle ID
+      classificationIdNum,    // 2. classification_id
+      inv_make,               // 3. Make
+      inv_model,              // 4. Model
+      inv_year,               // 5. Year
+      inv_description,        // 6. Description
+      inv_image,              // 7. Image
+      inv_thumbnail,          // 8. Thumbnail
+      inv_price,              // 9. Price
+      inv_miles,              // 10. Miles
+      inv_color               // 11. Color
+    );
+
+    if (deleteResult) {
+      req.flash("notice", `Successfully deleted ${inv_make} ${inv_model} from inventory.`);
+      return res.redirect("/inv");
+    } else {
+      throw new Error("Vehicle deleting failed.");
+    }
+  } catch (error) {
+    console.error("Error editing vehicle:", error);
+    return res.render("inventory/delete-inventory", {
+      title: "Edit Vehicle",
+      nav,
+      classificationSelect,
+      errors: errors.array(),
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+      msg: "Failed to Delete vehicle. Try again." 
+    });
+  }
+};
 
 /* ***************************
  * Handles footer error link
