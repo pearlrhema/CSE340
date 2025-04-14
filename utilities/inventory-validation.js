@@ -8,7 +8,7 @@ const invRules = () => {
     body("classification_id").isInt().withMessage("Please select a valid classification."),
     body("inv_make").trim().notEmpty().withMessage("Make is required."),
     body("inv_model").trim().notEmpty().withMessage("Model is required."),
-    body("inv_year").isInt({ min: 1886 }).withMessage("Enter a valid year."),
+    body("inv_year").isInt({ min: 1886 }).withMessage("Enter a valid year. not less than 1886."),
     body("inv_description").trim().notEmpty().withMessage("Description is required."),
     body("inv_image").trim().notEmpty().withMessage("Image path is required."),
     body("inv_thumbnail").trim().notEmpty().withMessage("Thumbnail path is required."),
