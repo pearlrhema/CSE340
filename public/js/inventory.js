@@ -66,7 +66,7 @@ function buildInventoryList(data) {
       // Edit button
       dataTable += `
         <td>
-          <button class="action-btn edit-btn" onclick="window.location.href='/inv/edit/${element.inv_id}'" title="Edit Vehicle">
+          <button class="action-btn edit-btn" onclick="window.location.href='/inv/edit-inventory/${element.inv_id}'" title="Edit Vehicle">
             <i class="fas fa-edit"></i>
           </button>
         </td>`;

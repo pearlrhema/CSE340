@@ -260,6 +260,135 @@ invCont.getInventoryJSON = async (req, res, next) => {
   }
 }
 
+// //* ***************************
+// // *  Build Edit Inventory View
+// // * ************************** */
+// invCont.buildEditInventory = async function (req, res) {
+//   const inv_id = parseInt(req.params.invId)
+//   const data = await invModel.getInventoryById(inv_id)
+//   const classificationSelect = await utilities.buildClassificationList(data[0].classification_id)
+//   let nav = await utilities.getNav()
+//   res.render("inventory/edit-inventory", {
+//     title: "Edit Vehicle",
+//     nav,
+//     classificationSelect,
+//     data: data[0],
+//     errors: null,
+//     message: req.flash("message")
+//   })
+// }
+
+/* ***************************
+ *  Build edit inventory view
+ * ************************** */
+invCont.buildEditInventory = async function (req, res, next) {
+  const inv_id = parseInt(req.params.inv_id)
+  const classification_id = parseInt(req.params.classification_id)
+    let nav = await utilities.getNav()
+    const itemData = await invModel.getInventoryById(inv_id)
+    const classificationSelect = await utilities.buildClassificationList(itemData.classification_id)
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`
+    res.render("inventory/edit-inventory", {
+      title: "Edit " + itemName,
+      nav,
+      classificationSelect: classificationSelect,
+      errors: null,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_description: itemData.inv_description,
+      inv_image: itemData.inv_image,
+      inv_thumbnail: itemData.inv_thumbnail,
+      inv_price: itemData.inv_price,
+      inv_miles: itemData.inv_miles,
+      inv_color: itemData.inv_color,
+      classification_id: itemData.classification_id
+    })
+}
+//when the values are brought in from the database to populate the form fields, as well as when we detect errors, we will use local params to do so. This is why each of the individual values are declared in this controller function as part of the render data object
+
+//* ***************************
+// *  Edit Inventory Item
+// * ************************** */
+invCont.editInventory = async function (req, res) {
+  const {
+    inv_id,
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color,
+  } = req.body;
+
+  const errors = validationResult(req);
+  const nav = await utilities.getNav();
+  const classificationSelect = await utilities.buildClassificationList(classification_id);
+
+  // Validate form data first
+  if (!errors.isEmpty()) {
+    return res.render("inventory/edit-inventory", {
+      title: "Edit Vehicle",
+      nav,
+      classificationSelect,
+      errors: errors.array(),
+      message: null
+    });
+  }
+
+  try {
+    // Convert string values to integers where necessary.
+    const invIdNum = parseInt(inv_id); 
+    const classificationIdNum = parseInt(classification_id);
+
+    // Call editInventory with values in the correct order.
+    const editResult = await invModel.editInventory(
+      invIdNum,               // 1. Vehicle ID
+      classificationIdNum,    // 2. classification_id
+      inv_make,               // 3. Make
+      inv_model,              // 4. Model
+      inv_year,               // 5. Year
+      inv_description,        // 6. Description
+      inv_image,              // 7. Image
+      inv_thumbnail,          // 8. Thumbnail
+      inv_price,              // 9. Price
+      inv_miles,              // 10. Miles
+      inv_color               // 11. Color
+    );
+
+    if (editResult) {
+      req.flash("notice", `Successfully modified ${inv_make} ${inv_model} in inventory.`);
+      return res.redirect("/inv");
+    } else {
+      throw new Error("Vehicle editing failed.");
+    }
+  } catch (error) {
+    console.error("Error editing vehicle:", error);
+    return res.render("inventory/edit-inventory", {
+      title: "Edit Vehicle",
+      nav,
+      classificationSelect,
+      errors: errors.array(),
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+      msg: "Failed to edit vehicle. Try again." 
+    });
+  }
+};
+
+
 
 /* ***************************
  * Handles footer error link

@@ -56,6 +56,17 @@ router.post(
 router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON));
 //next we set the function for the getInventory route in the invController.js file to get the data from the database and return it as Json.
 
+//route to build edit-inventory view and post the updated inventory item
+router.get("/edit-inventory/:inv_id", utilities.handleErrors(invController.buildEditInventory));
+
+//route to post the updated inventory item
+router.post(
+  "/edit-inventory",
+  invRules(),
+  checkInvData,
+  utilities.handleErrors(invController.editInventory)
+);
+
 // Route to build inventory item details view
 // router.get("/detail/:invId", invController.buildByInvId, utilities.handleErrors(invController.buildDetail));
 // Vehicle Detail Route

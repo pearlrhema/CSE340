@@ -158,7 +158,71 @@ async function addInventory(
   }
 };
 
+//* ***************************
+// *  Update inventory item
+// * ************************** */
+async function editInventory(
+  inv_id,
+  classification_id,
+  inv_make,
+  inv_model,
+  inv_year,
+  inv_description,
+  inv_image,
+  inv_thumbnail,
+  inv_price,
+  inv_miles,
+  inv_color
+) {
+  try {
+    console.log("Params being passed to editInventory:", {
+      inv_id,
+      classification_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color
+    });
+    const sql = `
+      UPDATE inventory 
+      SET classification_id = $2, 
+          inv_make = $3, 
+          inv_model = $4, 
+          inv_year = $5, 
+          inv_description = $6,
+          inv_image = $7, 
+          inv_thumbnail = $8, 
+          inv_price = $9, 
+          inv_miles = $10, 
+          inv_color = $11
+      WHERE inv_id = $1
+      RETURNING *;
+    `;
 
+    const data = await pool.query(sql, [
+      inv_id,
+      classification_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+    ]);
 
+    return data.rows[0];
+  } catch (error) {
+    console.error("updateInventory error:", error);
+    throw error;
+  }
+}
 
-module.exports = { getClassifications, getInventoryByClassificationId, getInventoryById, insertClassification, addInventory};
+module.exports = { getClassifications, getInventoryByClassificationId, getInventoryById, insertClassification, addInventory, editInventory };
