@@ -28,6 +28,24 @@ router.post("/register", regValidate.registrationRules(), regValidate.checkRegDa
 
 router.post("/login", loginValidate.loginRules(), loginValidate.checkLoginData, utilities.handleErrors(accountController.accountLogin))
 
+// Logout Route
+router.get("/logout", accountController.accountLogout);
+
+// Account Update Routes
+router.get("/update/:accountId", utilities.handleErrors(accountController.buildUpdate));
+router.post(
+  "/update",
+  regValidate.updateRules(), // Use separate validation rules for update
+  regValidate.checkUpdateData,
+  utilities.handleErrors(accountController.updateAccount)
+);
+
+router.post(
+    "/update-password",
+    regValidate.updatePasswordRules(),
+    regValidate.checkUpdatePasswordData,
+    utilities.handleErrors(accountController.updatePassword)
+  );
 // Process the login attempt
 // router.post(
 //     "/login",

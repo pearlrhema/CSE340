@@ -234,8 +234,17 @@ async function deleteInventory(inv_id) {
     const data = await pool.query(sql, [inv_id])
   return data
   } catch (error) {
-    new Error("Delete Inventory Error")
+    console.error("updateInventory error:", error);
+    throw error;
   }
 }
 
-module.exports = { getClassifications, getInventoryByClassificationId, getInventoryById, insertClassification, addInventory, editInventory, deleteInventory };
+module.exports = {
+  getClassifications,
+  getInventoryByClassificationId,
+  getInventoryById,
+  insertClassification,
+  addInventory,
+  editInventory,
+  deleteInventory
+};

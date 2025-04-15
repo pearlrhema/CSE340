@@ -63,32 +63,48 @@ Util.buildClassificationGrid = async function(data){
 /* **************************************
 * Build the detail view HTML
 * ************************************ */
-Util.buildDetails = async function(vehicle){
-  let grid = ""; // Initialize grid variable
-
-  if(vehicle){
-    grid = '<div id="inv-detail">'
-    grid += '<img src="' + vehicle.inv_image 
-    +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
-      + ' on CSE Motors">'
-    grid += '<div class="vehicle-details">'
-    grid += '<h1>' + vehicle.inv_make + ' ' + vehicle.inv_model + '</h1>'
-    grid += '<div class="namePrice">'
-    grid += '<span>Price: $' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
-    grid += '<div class="mileage">Mileage: ' + new Intl.NumberFormat('en-US').format(vehicle.inv_miles) + ' miles</div>'
-    grid += '</div>'
-    grid += '<p><strong>Description:</strong> ' + vehicle.inv_description + '</p>'
-    grid += '<p><strong>Year:</strong> ' + vehicle.inv_year + '</p>'
-    grid += '<p><strong>Color:</strong> ' + vehicle.inv_color + '</p>'
-    grid += '</div>'
-    grid += '</div>'
+Util.buildDetails = async function (vehicle) {
+  let grid = "";
+  console.dir({ vehicle });
+  if (vehicle) {
+    grid = `
+      <section class="car-listing">
+        <img src="/images/vehicles/${vehicle.inv_image.replace('/images/', '')}" alt="${data.inv_make} ${data.inv_model}">
+        <div class="car-information">
+          <div>
+            <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+          </div>
+          <div>
+            ${Number.parseFloat(vehicle.inv_price).toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })}
+          </div>
+          <div class="description">
+            <p>
+              ${vehicle.inv_description}
+            </p>
+            <dl>
+              <dt>MILEAGE</dt>
+              <dd>${vehicle.inv_miles.toLocaleString("en-US", {
+                style: "decimal",
+              })}</dd>
+              <dt>COLOR</dt>
+              <dd>${vehicle.inv_color}</dd>
+              <dt>CLASS</dt>
+              <dd>${vehicle.classification_name}</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+    `;
+  } else {
+    grid = `
+      <p>Sorry, no matching vehicles could be found.</p>
+    `;
   }
-  else { 
-    grid += '<p class="notice">Sorry, no matching vehicle could be found.</p>'
-  }
-
   return grid;
-}
+};
 //try and use this method to get the page
 // Util.buildLogin = async function () {
 //   let grid = ""; // Initialize grid variable
@@ -166,7 +182,24 @@ Util.checkJWTToken = (req, res, next) => {
   } else {
    next()
   }
- }
+}
+ 
+Util.updateCookie = (accountData, res) => {
+  const accessToken = jwt.sign(
+    accountData,
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: 3600 }
+  );
+  if (process.env.NODE_ENV === "development") {
+    res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 });
+  } else {
+    res.cookie("jwt", accessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 3600 * 1000,
+    });
+  }
+}
 
 
 /* ****************************************
@@ -180,5 +213,35 @@ Util.checkLogin = (req, res, next) => {
     return res.redirect("/account/login")
   }
  }  //How is this different from the one in the account-validation.js file?
+
+/* ****************************************
+ *  Check authorization
+ * ************************************ */
+Util.checkAuthorizationManager = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("Please log in");
+          res.clearCookie("jwt");
+          return res.redirect("/account/login");
+        }
+        if(accountData.account_type == "Employee" || accountData.account_type == "Admin") {
+          next();
+        }
+        else {
+          req.flash("notice", "You are not authorized to modify inventory.");
+          return res.redirect("/account/login");
+        }
+      }
+    );
+  } else {
+
+    req.flash("notice", "You are not authorized to modify inventory.");
+    return res.redirect("/account/login");
+  }
+}
 
 module.exports = Util

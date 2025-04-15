@@ -3,6 +3,43 @@ const { body, validationResult } = require("express-validator");
 const utilities = require(".");
 const invModel = require("../models/inventory-model");
 
+
+/* **********************************
+ *  Add classification Data Validation Rules
+ * ********************************* */
+const classificationRules = () => {
+  return [
+    // firstname is required and must be string
+    body("classification_name")
+      .trim()
+      .escape()
+      .notEmpty()
+      .isAlphanumeric()
+      .isLength({ min: 1 })
+      .withMessage("Please provide a valid classification name."), // on error this message is sent.
+  ];
+};
+
+/* ******************************
+ * Check data and return errors or continue to registration
+ * ***************************** */
+const checkClassificationData = async (req, res, next) => {
+  const { classification_name } = req.body;
+  let errors = []
+  errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    let nav = await utilities.getNav();
+    res.render("inventory/add-classification", {
+      errors: errors.array(),
+      title: "Add Classification",
+      nav,
+      classification_name,
+    });
+    return;
+  }
+  next();
+};
+
 const invRules = () => {
   return [
     body("classification_id").isInt().withMessage("Please select a valid classification."),
@@ -50,7 +87,8 @@ const checkInvData = async (req, res, next) => {
     classification_id,
     inv_id,
   } = req.body;
-  let errors = validationResult(req);
+  let errors = [];
+  errors = validationResult(req);
   if (!errors.isEmpty()) {
     let nav = await utilities.getNav();
    const classificationSelect = await utilities.buildClassificationList(req.body.classification_id);
@@ -189,4 +227,4 @@ const checkDeleteData = async (req, res, next) => {
   next();
 };
 
-module.exports = { invRules, checkInvData, checkUpdateData, updateRules, DeleteRules, checkDeleteData };
+module.exports = { invRules, checkInvData, checkUpdateData, updateRules, DeleteRules, checkDeleteData, classificationRules, checkClassificationData };

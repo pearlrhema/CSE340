@@ -52,6 +52,13 @@ app.set("layout", "./layouts/layout")
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(cookieParser()) // for parsing cookies
+
+/**** ensuring that local account data is available to all */
+app.use((req, res, next) => {
+  res.locals.accountData = req.session.account || null;
+  res.locals.loggedin = req.session.loggedin || false;
+  next();
+});
 app.use(utilities.checkJWTToken) // to checek if the token exist
 
 

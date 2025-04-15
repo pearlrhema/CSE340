@@ -4,7 +4,7 @@ const router = new express.Router()
 const invController = require("../controllers/invController")
 const utilities = require("../utilities/")
 
-const { invRules, checkInvData, checkUpdateData, updateRules, DeleteRules, checkDeleteData } = require("../utilities/inventory-validation")
+const { invRules, checkInvData, checkUpdateData, updateRules, DeleteRules, checkDeleteData, checkClassificationData, classificationRules } = require("../utilities/inventory-validation")
 
 //we do the checking for the classification name here
 const { check } = require("express-validator")
@@ -22,12 +22,9 @@ router.get("/", utilities.handleErrors(invController.buildManagementView));
 router.get("/add-classification", utilities.handleErrors(invController.showAddClassificationForm));
   
 router.post("/add-classification",
-    [
-        check("classification_name")
-            .matches(/^[A-Za-z0-9]+$/)
-            .withMessage("Classification name must not contain spaces or special characters.")
-    ],
-    utilities.handleErrors(invController.addClassification));
+  classificationRules(),
+  checkClassificationData,
+  utilities.handleErrors(invController.addClassification));
 // NEXT WE QUERY THE DB FOR THE CLASSIFICATION NAME AND POST IT TO THE DB THROUGH THE MODEL. go to invModel.js
 
 
@@ -74,6 +71,7 @@ router.post("/delete-inventory",
   DeleteRules(),
   checkDeleteData,
   utilities.handleErrors(invController.deleteInventory));
+
 
 // Route to build inventory item details view
 // router.get("/detail/:invId", invController.buildByInvId, utilities.handleErrors(invController.buildDetail));
