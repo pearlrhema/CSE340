@@ -650,7 +650,8 @@ ul li {
   .content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    grid-template-rows: 1fr;
+    /* gap: 1rem; */
   }
 
   section#reviews {
@@ -659,6 +660,10 @@ ul li {
 
   section#upgrades {
     grid-column: 1/2;
+  }
+  
+  section#reviews, section#upgrades {
+    grid-row: 1;
   }
 
   #top-header {
