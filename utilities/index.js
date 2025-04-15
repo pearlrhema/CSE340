@@ -63,48 +63,32 @@ Util.buildClassificationGrid = async function(data){
 /* **************************************
 * Build the detail view HTML
 * ************************************ */
-Util.buildDetails = async function (vehicle) {
-  let grid = "";
-  console.dir({ vehicle });
-  if (vehicle) {
-    grid = `
-      <section class="car-listing">
-        <img src="/images/vehicles/${vehicle.inv_image.replace('/images/', '')}" alt="${data.inv_make} ${data.inv_model}">
-        <div class="car-information">
-          <div>
-            <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
-          </div>
-          <div>
-            ${Number.parseFloat(vehicle.inv_price).toLocaleString("en-US", {
-              style: "currency",
-              currency: "USD",
-            })}
-          </div>
-          <div class="description">
-            <p>
-              ${vehicle.inv_description}
-            </p>
-            <dl>
-              <dt>MILEAGE</dt>
-              <dd>${vehicle.inv_miles.toLocaleString("en-US", {
-                style: "decimal",
-              })}</dd>
-              <dt>COLOR</dt>
-              <dd>${vehicle.inv_color}</dd>
-              <dt>CLASS</dt>
-              <dd>${vehicle.classification_name}</dd>
-            </dl>
-          </div>
-        </div>
-      </section>
-    `;
-  } else {
-    grid = `
-      <p>Sorry, no matching vehicles could be found.</p>
-    `;
+Util.buildDetails = async function(vehicle){
+  let grid = ""; // Initialize grid variable
+
+  if(vehicle){
+    grid = '<div id="inv-detail">'
+    grid += '<img src="' + vehicle.inv_image 
+    +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
+      + ' on CSE Motors">'
+    grid += '<div class="vehicle-details">'
+    grid += '<h1>' + vehicle.inv_make + ' ' + vehicle.inv_model + '</h1>'
+    grid += '<div class="namePrice">'
+    grid += '<span>Price: $' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
+    grid += '<div class="mileage">Mileage: ' + new Intl.NumberFormat('en-US').format(vehicle.inv_miles) + ' miles</div>'
+    grid += '</div>'
+    grid += '<p><strong>Description:</strong> ' + vehicle.inv_description + '</p>'
+    grid += '<p><strong>Year:</strong> ' + vehicle.inv_year + '</p>'
+    grid += '<p><strong>Color:</strong> ' + vehicle.inv_color + '</p>'
+    grid += '</div>'
+    grid += '</div>'
   }
+  else { 
+    grid += '<p class="notice">Sorry, no matching vehicle could be found.</p>'
+  }
+ 
   return grid;
-};
+}
 //try and use this method to get the page
 // Util.buildLogin = async function () {
 //   let grid = ""; // Initialize grid variable
