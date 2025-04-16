@@ -1,0 +1,17 @@
+<h1>Confirm Deletion</h1>
+
+<p>
+  The classification <strong><%= classification.classification_name %></strong> has 
+  <strong><%= inventoryCount %></strong> vehicle(s) associated with it.
+</p>
+
+<p>
+  Deleting this classification will also permanently delete all related vehicles.
+</p>
+
+<form method="post" action="/inv/delete-classification">
+  <input type="hidden" name="classification_id" value="<%= classification.classification_id %>">
+  <input type="hidden" name="confirmed" value="true">
+  <button type="submit" class="btn btn-danger">Yes, Delete All</button>
+  <a href="/inv/" class="btn btn-secondary">Cancel</a>
+</form>

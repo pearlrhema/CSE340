@@ -239,6 +239,46 @@ async function deleteInventory(inv_id) {
   }
 }
 
+/* ***************************
+ *  delete classification by ID
+ * ************************** */
+async function deleteClassification(classification_id) {
+  try {
+    const sql = 'DELETE FROM classification WHERE classification_id = $1'
+    const data = await pool.query(sql, [classification_id])
+    return data
+  } catch (error) {
+    console.error("deleteClassification error:", error);
+    throw error;
+  }
+}
+
+//check if a classifcation has any vehicles
+async function checkInventoryByClassification(classification_id) {
+  const result = await pool.query(
+    "SELECT * FROM inventory WHERE classification_id = $1",
+    [classification_id]
+  )
+  return result.rows
+}
+
+//Delete inventory items by classification ID
+async function deleteInventoryByClassificationId(classification_id) {
+  await pool.query(
+    "DELETE FROM inventory WHERE classification_id = $1",
+    [classification_id]
+  )
+} //does this delete all the inventory at once?
+
+//Delete classification
+async function deleteClassificationByID(classification_id) {
+  const result = await pool.query(
+    "DELETE FROM classification WHERE classification_id = $1",
+    [classification_id]
+  )
+  return result.rowCount
+}
+
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
@@ -246,5 +286,9 @@ module.exports = {
   insertClassification,
   addInventory,
   editInventory,
-  deleteInventory
+  deleteInventory,
+  deleteClassification,
+  deleteInventoryByClassificationId,
+  checkInventoryByClassification,
+  deleteClassificationByID
 };

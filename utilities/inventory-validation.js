@@ -227,4 +227,13 @@ const checkDeleteData = async (req, res, next) => {
   next();
 };
 
-module.exports = { invRules, checkInvData, checkUpdateData, updateRules, DeleteRules, checkDeleteData, classificationRules, checkClassificationData };
+module.exports = {
+  invRules,
+  checkInvData,
+  checkUpdateData,
+  updateRules,
+  DeleteRules,
+  checkDeleteData,
+  classificationRules,
+  checkClassificationData
+};

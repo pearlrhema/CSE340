@@ -73,6 +73,16 @@ router.post("/delete-inventory",
   utilities.handleErrors(invController.deleteInventory));
 
 
+// delete classification view
+router.get('/delete-classification',
+  utilities.handleErrors(invController.buildDeleteClassification)
+)
+
+// delete classification post handler
+router.post('/delete-classification',
+  utilities.handleErrors(invController.deleteClassification)
+)
+
 // Route to build inventory item details view
 // router.get("/detail/:invId", invController.buildByInvId, utilities.handleErrors(invController.buildDetail));
 // Vehicle Detail Route

@@ -1,0 +1,26 @@
+<h1>Delete Classification</h1>
+
+<% if (errors && errors.length > 0) { %>
+    <ul class="errors">
+    <% errors.forEach(error => { %>
+        <li><%= error.msg %></li>
+    <% }) %>
+    </ul>
+<% } %>
+
+<% if (message) { %>
+    <p class="flash-message"><%= message %></p>
+<% } %>
+
+<form method="post" action="/inv/delete-classification">
+    <label for="classification_id">Select a classification to delete:</label>
+    <select name="classification_id" id="classification_id" required>
+        <option value="">-- Select Classification --</option>
+        <% classifications.forEach(c => { %>
+            <option value="<%= c.classification_id %>"><%= c.classification_name %></option>
+        <% }) %>
+    </select>
+
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="/inv/" class="btn btn-secondary">Cancel</a>
+</form>
