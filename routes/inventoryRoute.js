@@ -80,6 +80,8 @@ router.get('/delete-classification',
 
 // delete classification post handler
 router.post('/delete-classification',
+  // DeleteRules(),
+  // checkDeleteData,
   utilities.handleErrors(invController.deleteClassification)
 )
 
